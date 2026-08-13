@@ -1,26 +1,108 @@
+/* 1. Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* 2. Tailwind v4 import (REQUIRED) */
 @import "tailwindcss";
 
+/* 3. Root variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-roboto: Roboto, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 4. Tailwind v4 theme tokens */
+@theme {
+  /* Brand colors */
+  --color-primary: #1f2937;
+  --color-secondary: #6b7280;
+  --color-accent: #facc15;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  --color-info-hover: #2563eb;
+  --color-green: #16a085;
+
+  /* Surfaces */
+  --color-bg: #ffffff;
+  --color-surface: #f9fafb;
+  --color-border: #e5e7eb;
+
+  /* Text */
+  --color-text: #111827;
+  --color-subtle: #6b7280;
+
+  /* Typography */
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+
+  /* Dashboard tokens */
+  --dash-sidebar-bg: #1a1d2e;
+  --color-purple-700: lab(36.1758% 69.8525 -80.0381);
+  --dash-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --dash-sidebar-active: #4ade80;
+  --dash-sidebar-active-bg: #242740;
+  --dash-sidebar-text: #c8ccd8;
+  --dash-sidebar-muted: #5c6270;
+  --dash-sidebar-border: rgba(255, 255, 255, 0.07);
+  --dash-header-bg: #ffffff;
+  --dash-header-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --dash-body-bg: #f1f3f4;
+
+  /* Alpha / tint colors */
+  --color-info-tint-12: rgba(59, 130, 246, 0.12);
+  --color-danger-tint-6: rgba(239, 68, 68, 0.06);
+  --color-danger-tint-20: rgba(239, 68, 68, 0.2);
+  --color-green-tint-10: rgba(22, 160, 133, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 5. Tailwind custom utilities */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 6. Prose styling */
+.prose {
+  width: 100%;
+}
+.prose h2 {
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  color: var(--color-primary);
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose h3 {
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  color: var(--color-primary);
+  margin-top: 1.2rem !important;
+  margin-bottom: 0.4rem !important;
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+.prose li {
+  margin-bottom: 0.25rem !important;
+}
+.prose strong {
+  font-weight: 700 !important;
+}
+.prose em {
+  font-style: italic !important;
+}
+
+/* Pulse animation for Go Live button */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.animate-pulse-dot {
+  animation: pulse 1.2s infinite;
 }
