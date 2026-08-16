@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   const isPublic    = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
   const isProtected = pathname.startsWith("/overview")
     || pathname.startsWith("/vehicles")
-    || pathname.startsWith("/bookings")
+    || pathname.startsWith("/booking")
     || pathname.startsWith("/customers")
     || pathname.startsWith("/damage")
     || pathname.startsWith("/payments")
@@ -53,7 +53,7 @@ export const config = {
     "/login",
     "/overview/:path*",
     "/vehicles/:path*",
-    "/bookings/:path*",
+    "/booking/:path*",
     "/customers/:path*",
     "/damage/:path*",
     "/damage-reports/:path*",

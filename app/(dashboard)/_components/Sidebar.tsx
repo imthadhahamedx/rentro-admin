@@ -37,7 +37,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
     { label: "Overview", href: "/overview", icon: Icons.overview },
-    { label: "Bookings", href: "/bookings", icon: Icons.bookings },
+    { label: "Bookings", href: "/booking", icon: Icons.bookings },
     { label: "Vehicles", href: "/vehicles", icon: Icons.vehicles },
     { label: "Customers", href: "/customers", icon: Icons.customers },
     { label: "Damage", href: "/damage", icon: Icons.damage },
