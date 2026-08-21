@@ -6,14 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createDamageReport, getErrorMessage } from "@/service/damageReportService";
 import { getDamages, DamageListItem } from "@/service/damageService";
+import apiClient from "@/lib/axios";
 
-// Minimal booking option type — reuse booking service types or inline
+// Minimal booking option type — matches BookingListItemDTO fields
 interface BookingOption {
   id: string;
   bookingRef: string;
   customerName: string;
   vehicleLabel: string;
-  vehicleId: string;
   status: string;
 }
 
@@ -46,23 +46,21 @@ export default function NewDamageReportPage() {
     async function loadBookings() {
       try {
         setLoadingBookings(true);
-        const res = await import("@/lib/axios").then(({ default: apiClient }) =>
-          apiClient.get("/booking", {
-            params: { searchText: bookingSearch, page: 0, size: 50 },
-          })
-        );
+        const res = await apiClient.get("/booking", {
+          params: { searchText: bookingSearch, page: 0, size: 50 },
+        });
         if (!cancelled) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const dataList = res.data?.data?.dataList ?? [];
+          const dataList: any[] = res.data?.data?.dataList ?? [];
           setBookingOptions(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            dataList.map((b: any) => ({
-              id: b.id,
-              bookingRef: b.bookingRef,
+            dataList.map((b) => ({
+              id: String(b.id),
+              bookingRef: b.bookingRef ?? "",
               customerName: b.customerName ?? "—",
-              vehicleLabel: b.vehicleLabel ?? "—",
-              vehicleId: b.vehicleId,
-              status: b.status,
+              vehicleLabel: b.vehicleName
+                ? `${b.vehicleName} (${b.regNo ?? ""})`
+                : "—",
+              status: b.status ?? "",
             }))
           );
         }
@@ -76,24 +74,23 @@ export default function NewDamageReportPage() {
     };
   }, [bookingSearch]);
 
-  // When booking changes, load damage options for that booking's vehicle
+  // When booking changes, fetch full booking detail to get vehicleId, then load damages
   useEffect(() => {
     if (!bookingId) {
       setDamageOptions([]);
       return;
     }
-    const selectedBooking = bookingOptions.find((b) => b.id === bookingId);
-    if (!selectedBooking?.vehicleId) return;
 
     let cancelled = false;
     async function loadDamages() {
       try {
         setLoadingDamages(true);
-        const result = await getDamages({
-          vehicleId: selectedBooking!.vehicleId,
-          page: 0,
-          size: 100,
-        });
+        // Fetch booking detail to get the nested vehicle.id
+        const detailRes = await apiClient.get(`/booking/${bookingId}`);
+        const vehicleId: string | undefined = detailRes.data?.data?.vehicle?.id;
+        if (!vehicleId || cancelled) return;
+
+        const result = await getDamages({ vehicleId, page: 0, size: 100 });
         if (!cancelled) setDamageOptions(result.dataList ?? []);
       } finally {
         if (!cancelled) setLoadingDamages(false);
@@ -103,7 +100,7 @@ export default function NewDamageReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [bookingId, bookingOptions]);
+  }, [bookingId]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -197,7 +194,7 @@ export default function NewDamageReportPage() {
                   : "Select a damage record"}
               </option>
               {damageOptions.map((d) => (
-                <option key={d.id} value={d.id}>
+                <option key={String(d.id)} value={String(d.id)}>
                   {d.description.substring(0, 60)}
                   {d.description.length > 60 ? "..." : ""} [{d.isFixed ? "Fixed" : "Open"} · {d.damageBy}]
                 </option>
