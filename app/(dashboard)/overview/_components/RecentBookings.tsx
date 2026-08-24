@@ -27,7 +27,7 @@ export default function RecentBookings({ bookings, loading = false }: RecentBook
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <h3 className="text-sm font-semibold text-text">Recent Bookings</h3>
         <Link
-          href="/bookings"
+          href="/booking"
           className="text-xs font-medium text-info hover:underline"
         >
           View all
@@ -56,7 +56,7 @@ export default function RecentBookings({ bookings, loading = false }: RecentBook
           bookings.map((booking) => (
             <Link
               key={booking.id}
-              href={`/bookings/${booking.id}`}
+              href={`/booking/${booking.id}`}
               className="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-body"
             >
               <div className="min-w-0">

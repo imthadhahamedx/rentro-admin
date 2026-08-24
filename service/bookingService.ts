@@ -6,7 +6,6 @@ import { StandardResponse } from "./authService";
 import { BookingStatus } from "./dashboardService";
 
 // ─── Types that mirror the backend DTOs ──────────────────────────────────────
-
 export interface PaginatedResponse<T> {
   count: number;
   dataList: T[];
@@ -167,7 +166,6 @@ export interface BookingNotesPayload {
 }
 
 // ─── List / detail ────────────────────────────────────────────────────────────
-
 export async function getBookings(params: {
   searchText?: string;
   status?: string;
@@ -193,8 +191,12 @@ export async function getBookingById(id: string): Promise<BookingDetail> {
   return response.data.data;
 }
 
-// ─── Option lookups (for the New Booking form) ───────────────────────────────
+export async function getBookingByRef(ref: string): Promise<BookingDetail> {
+  const response = await apiClient.get<StandardResponse<BookingDetail>>(`/booking/payment/${ref}`);
+  return response.data.data;
+}
 
+// ─── Option lookups (for the New Booking form) ───────────────────────────────
 export async function getCustomerOptions(searchText = ""): Promise<CustomerOption[]> {
   const response = await apiClient.get<StandardResponse<CustomerOption[]>>(
     "/booking/options/customers",
@@ -219,14 +221,12 @@ export async function getLocationOptions(): Promise<LocationOption[]> {
 }
 
 // ─── Create ───────────────────────────────────────────────────────────────────
-
 export async function createBooking(payload: BookingCreatePayload): Promise<string> {
   const response = await apiClient.post<StandardResponse<string>>("/booking", payload);
   return response.data.data;
 }
 
 // ─── Lifecycle actions ────────────────────────────────────────────────────────
-
 export async function confirmBooking(id: string): Promise<void> {
   await apiClient.put(`/booking/${id}/confirm`);
 }
@@ -252,7 +252,6 @@ export async function updateBookingNotes(id: string, payload: BookingNotesPayloa
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
 /** Extracts a human-readable message from an Axios/StandardResponse error. */
 export function getErrorMessage(err: unknown, fallback = "Something went wrong. Please try again."): string {
   const anyErr = err as { response?: { data?: { message?: string } } };

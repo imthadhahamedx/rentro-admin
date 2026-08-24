@@ -235,7 +235,7 @@ export default function BookingsPage() {
                   bookings.map((b) => (
                       <tr
                           key={b.id}
-                          onClick={() => router.push(`/bookings/${b.id}`)}
+                          onClick={() => router.push(`/booking/${b.id}`)}
                           className="cursor-pointer transition-colors hover:bg-body"
                       >
                         <td className="px-5 py-4">
